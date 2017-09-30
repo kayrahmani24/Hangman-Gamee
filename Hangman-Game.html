@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hangman Game</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link href='https://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet'>
+<style>
+  .ying{
+   
+    font-family: 'Aldrich';font-size: 22px;
+  }
+
+  .jumbotron{
+    background-color: orange;
+  }
+  h1 {
+font-family: 'Aldrich';font-size: 22px;
+  }
+</style>
+</head>
+<body>
+  <div class="jumbotron">
+  <div class="container">
+    <h1><strong>Hangman</strong></h1>
+  </div>
+</div>
+<div class="ying">
+<div id="wins">Wins: </div>
+<br>
+<div id="guessRemain">Guesses Remaining: </div>
+<br>
+<div id="letterGuess">Letters Guessed: </div>
+<br>
+<div id="wordisplay">Current: </div>
+</div>
+</body>
+</html>
+
+<script>
+var wins = 0;
+var numGuessRemain =15;
+var lettersAlreadyGuessed = [];
+
+
+var hangmanChoices = ["chicago", "habenero", "horseshoe", "northwestern", "javascript", "hamburger", "coffee"];
+
+
+   
+function hangmanGenerator(arr){
+  return hangmanChoices[Math.floor(Math.random() * arr.length)];
+};
+
+var hangmanWord = hangmanGenerator(hangmanChoices);
+
+
+function placeGenerator(str){
+  var myArr = [];
+  for(var i = 0; i< str.length; i++){
+    myArr.push("_"); 
+    document.getElementById("wordisplay").innerHTML = 
+    "Current Word: " + myArr.join(" ");
+  }
+  return myArr;
+};
+
+
+var hangmanPlacementholders = placeGenerator(hangmanWord);
+
+document.onkeyup=function(event) {
+
+  var keyPressed = event.key;
+
+
+  var charIndex = hangmanWord.indexOf(keyPressed);
+
+  
+  if(numGuessRemain === 0){
+    alert("You lose");
+    startOver();
+  }
+
+ 
+  if(charIndex === -1){
+    lettersAlreadyGuessed.push(keyPressed); 
+    numGuessRemain=numGuessRemain-1; 
+    alert("Nope,Try Again!"); 
+    document.getElementById("guessRemain").innerHTML =
+     "Guesses Remaining: " + numGuessRemain;
+    document.getElementById("letterGuess").innerHTML =
+     "Letters Guessed: " + lettersAlreadyGuessed.join(" ");
+    }
+
+    else{
+      lettersAlreadyGuessed.push(keyPressed);
+      numGuessRemain = numGuessRemain-1;
+      for(var i=0;i<hangmanPlacementholders.length;i++){
+        if(hangmanWord[i] === keyPressed){
+          hangmanPlacementholders[i] = keyPressed;
+          document.getElementById("wordisplay").innerHTML = 
+          "Current Word: " + hangmanPlacementholders.join(" "); 
+           document.getElementById("letterGuess").innerHTML = 
+           "Letters Guessed: " + lettersAlreadyGuessed.join(" ");
+          }
+            
+        }
+        document.getElementById("guessRemain").innerHTML = 
+        "Guesses Remaining: " + numGuessRemain;
+         
+        }
+
+        
+        var hangmanCompare = hangmanPlacementholders.join("");
+        
+        
+        if(hangmanCompare === hangmanWord){
+          alert("You Win!");
+          
+          document.getElementById("wins").innerHTML = "Wins: " + ((wins++)+1);
+          hangmanCompare = "blank"; 
+          startOver(); 
+
+         }
+         
+
+       
+      
+      function startOver(){
+        keyPressed = "";
+        numGuessRemain =10;
+        lettersAlreadyGuessed = [];
+        myPlaceholders =[];
+        hangmanWord = hangmanGenerator(hangmanChoices);
+        hangmanPlacementholders = placeGenerator(hangmanWord); 
+        document.getElementById("guessRemain").innerHTML = "Guesses Remaining: ";
+         document.getElementById("letterGuess").innerHTML = "Letters Guessed: ";
+        document.getElementById("wordisplay").innerHTML = "Current Word: ";
+        
+      }
+
+
+
+        
+      };
+      </script>
